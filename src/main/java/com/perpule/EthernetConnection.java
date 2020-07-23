@@ -32,6 +32,7 @@ public class EthernetConnection {
             }
             else {
                 System.out.println("No encryption");
+                System.out.println("MEssage: " +  message);
                 cipBytes = UtilHex.hexStringToByteArray(message);
             }
             System.out.println("Input : " + cipBytes.toString());
@@ -50,6 +51,12 @@ public class EthernetConnection {
                 else {
                     System.out.println("No encryption");
                     responseString = UtilHex.bytesToHex(decBytes);
+                    System.out.println("First response: " + responseString);
+                    decBytes = new byte[1024];
+                    length = in.read(decBytes);
+                    decBytes = Arrays.copyOf(decBytes, length);
+                    responseString = UtilHex.bytesToHex(decBytes);
+                    System.out.println("Second response: " + responseString + " length: " + length);
                 }
                 System.out.println("Response : " + responseString);
 
