@@ -94,6 +94,10 @@ public class EthernetConnection {
     }
 
     public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            System.out.println("Usage: java -jar edc-conn.jar <address> <port> <message> <encrypt>");
+            return;
+        }
         System.out.println(Arrays.toString(args));
         new EthernetConnection().talkToClient(args[0], Integer.parseInt(args[1]), args[2], args[3]);
     }
