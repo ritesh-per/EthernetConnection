@@ -10,12 +10,12 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class Cryptography {
-    private String KEY_FILE_PATH = "/lib/ECRHEX.KEK";
 
-    private byte[] encryptionKey;
+    private final String KEY_FILE_PATH = "/lib/ECRHEX.KEK";
     private final String INIT_VECTOR = "00000000";
+    private byte[] encryptionKey;
 
-    public Cryptography(){
+    public Cryptography() {
         String keyString;
 
         keyString = encLoadKey();
@@ -27,7 +27,7 @@ public class Cryptography {
             encryptionKey = Cryptography.decrypt(keyString.getBytes(), "000000000000000000000000".getBytes(), INIT_VECTOR.getBytes());
             encryptionKey = Arrays.copyOf(encryptionKey, 24);
             System.arraycopy(encryptionKey, 0, encryptionKey, 16, 8);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -35,7 +35,7 @@ public class Cryptography {
         String myLibraryPath = System.getProperty("user.dir");
 
         File encFile = new File(myLibraryPath + KEY_FILE_PATH);
-        if (encFile.exists() == false) {
+        if (!encFile.exists()) {
             return null;
         }
 
@@ -57,13 +57,15 @@ public class Cryptography {
         }
     }
 
-    private static byte[] removePadding(byte[] paddedBytes){
+    private static byte[] removePadding(byte[] paddedBytes) {
         int paddingCount = 0;
         for (int i = (paddedBytes.length - 1); i > (paddedBytes.length - 8); i--) {
             if (paddedBytes[i] == (byte) 0xFF)       // PKCS1 Padding (0xFF)
+            {
                 paddingCount++;
-            else
+            } else {
                 break;
+            }
         }
         return Arrays.copyOfRange(paddedBytes, 0, paddedBytes.length - paddingCount);
     }
@@ -76,8 +78,7 @@ public class Cryptography {
 
         //c3des.init(Cipher.ENCRYPT_MODE, myKey, ivspec);
         c3des.init(Cipher.ENCRYPT_MODE, myKey);
-        byte [] cipherBytes = c3des.doFinal(plainBytes);
-        return cipherBytes;
+        return c3des.doFinal(plainBytes);
     }
 
     // Decrypts and encode in byte arrays
@@ -88,12 +89,12 @@ public class Cryptography {
 
         //c3des.init(Cipher.DECRYPT_MODE, myKey, ivspec);
         c3des.init(Cipher.DECRYPT_MODE, myKey);
-        byte [] plainBytes = c3des.doFinal(cipheredBytes);
+        byte[] plainBytes = c3des.doFinal(cipheredBytes);
         return removePadding(plainBytes);
     }
 
     public byte[] EcrEncrypt(String message) throws Exception {
-        byte cipBytes[];
+        byte[] cipBytes;
         int len;
         byte[] realMsg = UtilHex.hexStringToByteArray(message);
 
@@ -121,14 +122,6 @@ public class Cryptography {
 
         decBytes = new byte[512];   // refresh the memory for receiving next bytes
         return messageBuffer;
-    }
-
-    public static void main(String[] args) {
-        String a = "false";
-        if (Boolean.valueOf(a))
-            System.out.println(true);
-        else
-            System.out.println(false);
     }
 }
 

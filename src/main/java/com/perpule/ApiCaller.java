@@ -18,27 +18,27 @@ public class ApiCaller {
     private String url;
     private Integer connectionTimeout = 30000;
     private Integer readTimeout = 30000;
-    private Map<String,String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<String, String>();
     private String data;
 
+    private ApiCaller() {
+    }
 
-    private ApiCaller(){}
-
-    public static ApiCaller getInstance(){
+    public static ApiCaller getInstance() {
         return new ApiCaller();
     }
 
-    public ApiCaller setRequestMethod(RequestMethod requestMethod){
+    public ApiCaller setRequestMethod(RequestMethod requestMethod) {
         this.requestMethod = requestMethod;
         return this;
     }
 
-    public ApiCaller setUrl(String url){
+    public ApiCaller setUrl(String url) {
         this.url = url;
         return this;
     }
 
-    public ApiCaller setQueryParams(Map<String, String> queryParams){
+    public ApiCaller setQueryParams(Map<String, String> queryParams) {
         if (this.url.isEmpty()) {
             return this;
         }
@@ -53,8 +53,9 @@ public class ApiCaller {
             while (iter.hasNext()) {
                 Map.Entry mapEntry = iter.next();
                 queryString = queryString + mapEntry.getKey() + "=" + mapEntry.getValue();
-                if (iter.hasNext())
+                if (iter.hasNext()) {
                     queryString += "&";
+                }
             }
 
             setUrl(this.url.concat(queryString));
@@ -63,32 +64,32 @@ public class ApiCaller {
         return this;
     }
 
-    public ApiCaller setConnectionTimeout(Integer connectionTimeout){
+    public ApiCaller setConnectionTimeout(Integer connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
         return this;
     }
 
-    public ApiCaller setReadTimeout(Integer readTimeout){
+    public ApiCaller setReadTimeout(Integer readTimeout) {
         this.readTimeout = readTimeout;
         return this;
     }
 
-    public ApiCaller setAuth(String authToken){
+    public ApiCaller setAuth(String authToken) {
         headers.put("Authorization", authToken);
         return this;
     }
 
-    public ApiCaller setContentType(String contentType){
+    public ApiCaller setContentType(String contentType) {
         headers.put("Content-Type", contentType);
         return this;
     }
 
-    public ApiCaller setData(String data){
+    public ApiCaller setData(String data) {
         this.data = data;
         return this;
     }
 
-    public ApiCallerResponse call(){
+    public ApiCallerResponse call() {
         URL url = null;
         try {
             url = new URL(this.url);
@@ -114,10 +115,9 @@ public class ApiCaller {
 
             BufferedReader rd = null;
 
-            if(conn.getResponseCode() == 200 || conn.getResponseCode() == 201){
+            if (conn.getResponseCode() == 200 || conn.getResponseCode() == 201) {
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            }
-            else{
+            } else {
                 rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             }
 
@@ -128,7 +128,6 @@ public class ApiCaller {
                 result.append(line);
             }
             rd.close();
-
 
             ApiCallerResponse apiCallerResponse = new ApiCallerResponse();
             apiCallerResponse.setResponseCode(conn.getResponseCode());

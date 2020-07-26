@@ -1,6 +1,7 @@
 package com.perpule;
 
 public class ApiCallerResponse {
+
     private String responseMsg;
     private int responseCode;
 

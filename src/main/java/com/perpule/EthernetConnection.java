@@ -21,34 +21,32 @@ public class EthernetConnection {
         System.out.println("Connected to " + socket.toString());
         out = new DataOutputStream(socket.getOutputStream());
 
-        String responseString ="";
+        String responseString = "";
         byte[] cipBytes;
         byte[] decBytes = new byte[1024];
         Cryptography cryp = new Cryptography();
 
         try {
-            if (Boolean.valueOf(encrypt)) {
+            if (Boolean.parseBoolean(encrypt)) {
                 cipBytes = cryp.EcrEncrypt(message);
-            }
-            else {
+            } else {
                 System.out.println("No encryption");
-                System.out.println("MEssage: " +  message);
+                System.out.println("Message: " + message);
                 cipBytes = UtilHex.hexStringToByteArray(message);
             }
             System.out.println("Input : " + cipBytes.toString());
             out.write(cipBytes);
 
-            Integer t = 0;
+            int t = 0;
             while (t < 500) {
 
                 in = new DataInputStream(socket.getInputStream());
                 int length = in.read(decBytes);
                 decBytes = Arrays.copyOf(decBytes, length);
 
-                if (Boolean.valueOf(encrypt)) {
+                if (Boolean.parseBoolean(encrypt)) {
                     responseString = cryp.EcrDecrypt(decBytes);
-                }
-                else {
+                } else {
                     System.out.println("No encryption");
                     responseString = UtilHex.bytesToHex(decBytes);
                     System.out.println("First response: " + responseString);
@@ -67,12 +65,12 @@ public class EthernetConnection {
                     String url = "http://localhost:8083/edc/response";
                     System.out.println(url);
                     ApiCallerResponse resp = ApiCaller.getInstance().setUrl(url)
-                            .setRequestMethod(ApiCaller.RequestMethod.POST)
-                            .setContentType("application/json")
-                            .setData(new Gson().toJson(data))
-                            .setConnectionTimeout(1800000)
-                            .setReadTimeout(1800000)
-                            .call();
+                                                      .setRequestMethod(ApiCaller.RequestMethod.POST)
+                                                      .setContentType("application/json")
+                                                      .setData(new Gson().toJson(data))
+                                                      .setConnectionTimeout(1800000)
+                                                      .setReadTimeout(1800000)
+                                                      .call();
                     System.out.println("API Response : " + resp.getResponseMsg());
 
                     if (resp.getResponseCode() == 200) {
@@ -95,7 +93,8 @@ public class EthernetConnection {
         socket.close();
     }
 
-    public static void main(String args[]) throws IOException {
-        new EthernetConnection().talkToClient(args[0], Integer.valueOf(args[1]), args[2],args[3]);
+    public static void main(String[] args) throws IOException {
+        System.out.println(Arrays.toString(args));
+        new EthernetConnection().talkToClient(args[0], Integer.parseInt(args[1]), args[2], args[3]);
     }
 }

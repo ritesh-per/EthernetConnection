@@ -9,15 +9,15 @@ public class UtilHex {
         char[] chars = ascii.toCharArray();
 
         StringBuilder hex = new StringBuilder();
-        for (int i = 0; i < chars.length; i++) {
-            hex.append(Integer.toHexString((int) chars[i]));
+        for (char aChar : chars) {
+            hex.append(Integer.toHexString(aChar));
         }
 
         return hex.toString();
     }
 
-    public static String decimaltohex(int num) {
-        char ch[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    public static String decimalToHex(int num) {
+        char[] ch = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         int rem;
         String hexadecimal = "";
 
@@ -70,12 +70,13 @@ public class UtilHex {
         }
         return String.valueOf(xor);
     }
+
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
             data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
+                + Character.digit(s.charAt(i + 1), 16));
         }
         return data;
     }
@@ -91,7 +92,7 @@ public class UtilHex {
         return new String(hexChars);
     }
 
-    public static boolean isHex(String hex){
+    public static boolean isHex(String hex) {
         // Pattern p = Pattern.compile("^[a-zA-Z0-9]+$");
         Pattern p = Pattern.compile("^?([a-f0-9]{6}|[a-f0-9]{1})$");
         Matcher m = p.matcher(hex);
@@ -100,7 +101,7 @@ public class UtilHex {
 
     public static void main(String[] args) {
         System.out.println(asciiToStringHex("12345678901"));
-        System.out.println(decimaltohex(105));
+        System.out.println(decimalToHex(105));
         System.out.println(stringHexToAscii("6970"));
     }
 }
