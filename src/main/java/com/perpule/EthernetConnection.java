@@ -12,14 +12,21 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class EthernetConnection {
-    private Socket socket = null;
-    private DataInputStream in = null;
-    private DataOutputStream out = null;
 
+    /**
+     * Send data to client device.
+     *
+     * @param address
+     * @param port
+     * @param message
+     * @param encrypt
+     * @throws IOException
+     */
     private void talkToClient(String address, int port, String message, String encrypt) throws IOException {
-        socket = new Socket(address, port);
+        Socket socket = new Socket(address, port);
         System.out.println("Connected to " + socket.toString());
-        out = new DataOutputStream(socket.getOutputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+        DataInputStream in = null;
 
         String responseString = "";
         byte[] cipBytes;
@@ -93,12 +100,40 @@ public class EthernetConnection {
         socket.close();
     }
 
+    /**
+     * Check device connection.
+     *
+     * @param address
+     * @param port
+     */
+    private void checkDevice(String address, int port) {
+        Socket socket = null;
+        try {
+            socket = new Socket(address, port);
+            System.out.println(String.format("Connected to %s:%d!", address, port));
+            if (socket.isConnected()) {
+                socket.close();
+            }
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Connection failed!");
+    }
+
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
-            System.out.println("Usage: java -jar edc-conn.jar <address> <port> <message> <encrypt>");
-            return;
+            System.out.println("Usage:\n"
+                                   + "* check device conn  : java -jar edc-conn.jar <address> <port>\n"
+                                   + "* send data to device: java -jar edc-conn.jar <address> <port> <message> <encrypt>\n");
+        } else if (args.length == 2) {
+            System.out.println("Checking device: " + Arrays.toString(args));
+            new EthernetConnection().checkDevice(args[0], Integer.parseInt(args[1]));
+        } else if (args.length == 4) {
+            System.out.println("Sending data to device: " + Arrays.toString(args));
+            new EthernetConnection().talkToClient(args[0], Integer.parseInt(args[1]), args[2], args[3]);
+        } else {
+            System.out.println("Command not recognized!");
         }
-        System.out.println(Arrays.toString(args));
-        new EthernetConnection().talkToClient(args[0], Integer.parseInt(args[1]), args[2], args[3]);
     }
 }
