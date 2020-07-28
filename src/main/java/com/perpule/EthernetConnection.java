@@ -110,15 +110,15 @@ public class EthernetConnection {
         Socket socket = null;
         try {
             socket = new Socket(address, port);
-            System.out.println(String.format("Connected to %s:%d!", address, port));
+            System.out.println("OK");
             if (socket.isConnected()) {
                 socket.close();
             }
             return;
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
-        System.out.println("Connection failed!");
+        System.out.println("NOT_OK");
     }
 
     public static void main(String[] args) throws IOException {
@@ -127,7 +127,7 @@ public class EthernetConnection {
                                    + "* check device conn  : java -jar edc-conn.jar <address> <port>\n"
                                    + "* send data to device: java -jar edc-conn.jar <address> <port> <message> <encrypt>\n");
         } else if (args.length == 2) {
-            System.out.println("Checking device: " + Arrays.toString(args));
+            //System.out.println("Checking device: " + Arrays.toString(args));
             new EthernetConnection().checkDevice(args[0], Integer.parseInt(args[1]));
         } else if (args.length == 4) {
             System.out.println("Sending data to device: " + Arrays.toString(args));
